@@ -17,11 +17,21 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true,
   })
-  .then((con) => console.log('DB connection successful!'))
-  .catch((err) => console.log(err));
+  .then((con) => console.log('DB connection successful!'));
 
 const app = require('./app');
 
-app.listen(80 || process.env.PORT , () => {
-  console.log(`server started on port ${process.env.PORT || 3002}`);
+const server = app.listen(80 || process.env.PORT, () => {
+  console.log(
+    `server started on port ${process.env.PORT || 3002}  stage  ${
+      process.env.NODE_ENV
+    }`
+  );
+});
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTTION! Shutting down...');
+  server.close(() => {
+    process.exit(1);
+  });
 });
