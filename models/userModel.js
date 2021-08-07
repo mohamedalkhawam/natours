@@ -75,7 +75,7 @@ userSchema.methods.changePasswordAfter = async function (JWTTimestamp) {
       this.passwordChangedAt.getTime() / 1000,
       10
     );
-    return JWTTimestamp > changedTimeStamp;
+    return JWTTimestamp < changedTimeStamp;
   }
   return false;
 };
