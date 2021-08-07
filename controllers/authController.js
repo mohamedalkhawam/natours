@@ -51,6 +51,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (req.headers.authorization) {
     token = req.headers.authorization.split(' ')[1];
   }
+  if (req.headers.token) {
+    token = req.headers.token;
+  }
   if (!token) {
     return next(
       new AppError('You are not logged in! Please log in to get access.', 401)
@@ -80,3 +83,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    //i could get the user role from user object because the protect function  is running before this function, and in the protect function i said that re.user = currentUser so i have access to the user object
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+    next();
+  };
+};

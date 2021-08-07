@@ -5,7 +5,12 @@ const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
 router
   .route('/top-5-cheap')
-  .get(tourController.aliasTopTours, tourController.getAllTours);
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.aliasTopTours,
+    tourController.getAllTours
+  );
 router.route('/tour-stats').get(tourController.getTourStats);
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 router
@@ -17,5 +22,9 @@ router
   .route('/:id')
   .get(authController.protect, tourController.getOneTour)
   .patch(authController.protect, tourController.updateTour)
-  .delete(authController.protect, tourController.deleteTour);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour
+  );
 module.exports = router;
