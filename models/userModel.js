@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: { type: Boolean, default: true, select: false },
 });
 
 userSchema.post(/^find/, function (docs, next) {

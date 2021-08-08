@@ -12,10 +12,9 @@ router.patch(
   authController.updatePassword
 );
 router.patch('/updateMe', authController.protect, userController.updateMe);
-// router
-//   .route('/')
-//   .get(userController.getAllUsers)
-//   .post(userController.createUser);
+router.delete('/deleteMe', authController.protect, userController.deleteMe);
+router.route('/').get(authController.protect, userController.getAllUsers);
+// .post(userController.createUser);
 // router
 //   .route('/:id')
 //   .patch(userController.updateUser)

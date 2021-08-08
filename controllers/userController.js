@@ -36,12 +36,24 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     },
   });
 });
-exports.getAllUsers = function (req, res) {
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+  res.status(204).json({ status: 'success', data: null });
+});
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(User.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const user = await features.query;
   res.status(200).json({
     status: 'success',
-    result: users.length,
+    result: user.length,
+    data: { user },
+    requestTime: req.requestTime,
   });
-};
+});
 exports.getOneUser = (req, res) => {
   console.log(req.params);
 };
