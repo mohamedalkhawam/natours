@@ -70,7 +70,13 @@ userSchema.pre('save', async function (next) {
   this.passwordConfermation = undefined;
   next();
 });
-
+userSchema.pre('save', function (next) {
+  if (!this.modified?.('password') || this.isNew()) {
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
 userSchema.methods.correctPassword = async function (
   candidatepassword,
   userPassword
