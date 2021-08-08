@@ -9,6 +9,7 @@ const filterObj = (obj, ...allowedFields) => {
       newObj[el] = obj[el];
     }
   });
+  return newObj;
 };
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTS password dataBase
