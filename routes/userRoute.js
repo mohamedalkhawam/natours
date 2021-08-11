@@ -13,11 +13,13 @@ router.patch(
 );
 router.patch('/updateMe', authController.protect, userController.updateMe);
 router.delete('/deleteMe', authController.protect, userController.deleteMe);
-router.route('/').get(authController.protect, userController.getAllUsers);
-// .post(userController.createUser);
-// router
-//   .route('/:id')
-//   .patch(userController.updateUser)
-//   .delete(userController.deleteUser)
-//   .get(userController.getOneUser);
+router
+  .route('/')
+  .get(authController.protect, userController.getAllUsers)
+  .post(authController.protect, userController.createUser);
+router
+  .route('/:id')
+  .patch(authController.protect, userController.updateUser)
+  .delete(authController.protect, userController.deleteUser)
+  .get(authController.protect, userController.getOneUser);
 module.exports = router;

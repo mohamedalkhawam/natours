@@ -19,7 +19,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     result: tours.length,
-    data: { tours },
+    data: tours,
     requestTime: req.requestTime,
   });
 });
@@ -31,7 +31,7 @@ exports.getOneTour = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     result: 1,
-    data: { tour },
+    data: tour,
     requestTime: req.requestTime,
   });
 });
@@ -40,7 +40,7 @@ exports.createTour = catchAsync(async (req, res, next) => {
   console.log(req.requestTime);
   res.status(201).json({
     status: 'success',
-    data: { tour: newTour },
+    data: newTour,
     requestTime: req.requestTime,
   });
 });
@@ -54,7 +54,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: 'success',
-    data: { tour },
+    data: tour,
     requestTime: req.requestTime,
   });
 });
@@ -94,7 +94,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
   ]);
   res.status(200).json({
     status: 'success',
-    data: { stats },
+    data: stats,
     requestTime: req.requestTime,
   });
 });
@@ -136,7 +136,7 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   ]);
   res.status(200).json({
     status: 'success',
-    data: { plan },
+    data: plan,
     requestTime: req.requestTime,
   });
 });

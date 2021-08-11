@@ -12,10 +12,21 @@ const signToken = (id) => {
 };
 const createSendToken = (user, statusCode, res, req) => {
   const token = signToken(user._id);
+  const cookiesOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRED_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === 'production') {
+    cookiesOptions.secure = true;
+  }
+  res.cookie('jwt', token, cookiesOptions);
+  user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: { user },
+    data: user,
     requestTime: req.requestTime,
   });
 };
