@@ -55,7 +55,7 @@ app.use(function (req, res, next) {
   next();
 });
 app.use('/api/users', usersRouter);
-app.use('/tours', toursRouter);
+app.use('/api/tours', toursRouter);
 app.use('/reviews', reviewsRouter);
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
