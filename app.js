@@ -5,6 +5,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const usersRouter = require('./routes/userRoute');
 const toursRouter = require('./routes/tourRoute');
+const reviewsRouter = require('./routes/reviewRoute');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -53,8 +54,9 @@ app.use(function (req, res, next) {
   req.requestTime = new Date().toISOString();
   next();
 });
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
 app.use('/tours', toursRouter);
+app.use('/reviews', reviewsRouter);
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });

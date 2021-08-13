@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+// const User = require('./userModel');
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -107,6 +108,17 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+    //child ref
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
+    // reviews: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: 'Review',
+    // },
   },
 
   {
@@ -117,15 +129,35 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+// this is virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
 //DOCUMENT MIDDLEWARE: RUNS BEFORE .SAVE() AND .CREATE()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+// embadding guide into tours
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 //QUERY MIDDLEWARE:
+
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTours: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 tourSchema.post(/^find/, function (docs, next) {
