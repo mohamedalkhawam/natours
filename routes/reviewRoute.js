@@ -1,11 +1,17 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({
+  mergeParams: true,
+});
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
 router
   .route('/')
   .get(authController.protect, reviewController.getAllReviews)
-  .post(authController.protect, reviewController.createReview);
+  .post(
+    authController.protect,
+    reviewController.setTourIserIds,
+    reviewController.createReview
+  );
 router
   .route('/:id')
   .get(authController.protect, reviewController.getOneReview)
