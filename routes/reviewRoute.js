@@ -4,21 +4,21 @@ const router = express.Router({
 });
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
+
+router.use(authController.protect);
 router
   .route('/')
-  .get(authController.protect, reviewController.getAllReviews)
-  .post(
-    authController.protect,
-    reviewController.setTourIserIds,
-    reviewController.createReview
-  );
+  .get(reviewController.getAllReviews)
+  .post(reviewController.setTourInUserIds, reviewController.createReview);
 router
   .route('/:id')
-  .get(authController.protect, reviewController.getOneReview)
-  .patch(authController.protect, reviewController.updateReview)
+  .get(reviewController.getOneReview)
+  .patch(
+    authController.restrictTo('user', 'admin'),
+    reviewController.updateReview
+  )
   .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
+    authController.restrictTo('user', 'admin'),
     reviewController.deleteReview
   );
 module.exports = router;

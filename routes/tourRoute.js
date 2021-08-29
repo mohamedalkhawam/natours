@@ -14,26 +14,43 @@ const authController = require('../controllers/authController');
 //     authController.restrictTo('user'),
 //     reviewController.createReview
 //   );
+
 router.use('/:tourId/reviews', reviewRouter);
+
 router
   .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
+
+router.route('/tour-stats').get(tourController.getTourStats);
+
+router
+  .route('/monthly-plan/:year')
   .get(
     authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
-    tourController.aliasTopTours,
-    tourController.getAllTours
+    authController.restrictTo('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan
   );
-router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(authController.protect, tourController.createTour);
-// tourController.checkBody,
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour
+  );
+
 router
   .route('/:id')
+  // GET by ID
   .get(authController.protect, tourController.getOneTour)
-  .patch(authController.protect, tourController.updateTour)
+  // Update
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.updateTour
+  )
+  // Delete
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),

@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
 const factory = require('./handlerFactory');
+const Tour = require('../models/tourModel');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -12,6 +13,15 @@ const filterObj = (obj, ...allowedFields) => {
     }
   });
   return newObj;
+};
+exports.getAllUsers = factory.getAll(User);
+exports.getOneUser = factory.getOne(User);
+exports.createUser = factory.createOne(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTS password dataBase
@@ -40,33 +50,3 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({ status: 'success', data: null });
 });
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(User.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const user = await features.query;
-  res.status(200).json({
-    status: 'success',
-    result: user.length,
-    data: user,
-    requestTime: req.requestTime,
-  });
-});
-exports.getOneUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return next(new AppError('No user found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    result: 1,
-    data: user,
-    requestTime: req.requestTime,
-  });
-});
-
-exports.createUser = factory.createOne(User);
-exports.updateUser = factory.updateOne(User);
-exports.deleteUser = factory.deleteOne(User);

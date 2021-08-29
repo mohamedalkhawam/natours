@@ -6,21 +6,23 @@ router.post('/signup', authController.signup);
 router.post('/signin', authController.signin);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
-router.patch(
-  '/updatePassword',
-  authController.protect,
-  authController.updatePassword
-);
-router.patch('/updateMe', authController.protect, userController.updateMe);
+
+router.use(authController.protect);
+
+// All routes under this line are protected through this middleware
+router.patch('/updatePassword', authController.updatePassword);
+router.get('/me', userController.getMe, userController.getOneUser);
+router.patch('/updateMe', userController.updateMe);
 router.delete('/deleteMe', authController.protect, userController.deleteMe);
+router.use(authController.restrictTo("admin"))
 router
   .route('/')
-  .get(authController.protect, userController.getAllUsers)
-  .post(authController.protect, userController.createUser);
+  .get(userController.getAllUsers)
+  .post(userController.createUser);
 router
   .route('/:id')
-  .patch(authController.protect, userController.updateUser)
-  .delete(authController.protect, userController.deleteUser)
-  .get(authController.protect, userController.getOneUser);
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser)
+  .get(userController.getOneUser);
 
 module.exports = router;
